@@ -50,7 +50,7 @@ architecture Behavioral of digilock is
     type state is (init, E0, E1, E2, E3, opened, alarm);
     signal current_state: state := init;
     signal futur_state: state := init;
-    signal pressed_value_print: std_logic_vector(3 downto 0) := "0000";
+    --signal pressed_value_print: std_logic_vector(3 downto 0) := "0000";
     signal unique_A: std_logic;
     signal unique_B: std_logic;
     signal unique_C: std_logic;
@@ -91,20 +91,6 @@ begin
     variable pressed_value: std_logic_vector(3 downto 0);
     
     begin
-        --if unique_A = '1' then
-        if A = '1' then
-            pressed_value := "0001";
-        --elsif unique_B = '1' then
-        elsif B = '1' then
-            pressed_value := "0010";
-        --elsif unique_C = '1' then
-        elsif C = '1' then
-            pressed_value := "0011";
-        else
-            pressed_value := "0000";
-        end if;
-        
-        pressed_value_print <= pressed_value;
         
         case current_state is 
             when init =>
@@ -112,44 +98,99 @@ begin
                 SEG_1 <= "0000"; -- 0000 = 0 = -
                 SEG_2 <= "0000";
                 SEG_3 <= "0000";
-                if pressed_value = "0001" then
+                --if unique_A = '1' then
+                if A = '1' then
+                    pressed_value := "0001";
+                --elsif unique_B = '1' then
+                elsif B = '1' then
+                    pressed_value := "0010";
+                --elsif unique_C = '1' then
+                elsif C = '1' then
+                    pressed_value := "0011";
+                else
+                    pressed_value := "0000";
+                end if;
+                
+               -- pressed_value_print <= pressed_value;
+                
+                if pressed_value /= "0000" then
+                    SEG_0 <= "0000"; -- 0100 = 4 = L
+                    --SEG_1 <= "0000";
+                    --SEG_2 <= "0000";
+                    SEG_3 <= pressed_value;
+                    pressed_value := "0000";
                     futur_state <= E0;
                 else 
-                    futur_state <= init;
-                end if;    
+                    futur_state <= init; 
+                end if;  
                 
             when E0 =>     
-                SEG_0 <= "0001"; -- 0100 = 4 = L
-                SEG_1 <= "0001"; -- 0000 = 0 = -
-                SEG_2 <= "0001";
-                SEG_3 <= "0001";
-                if pressed_value = "0010" then
+                --SEG_0 <= "0001"; -- 0100 = 4 = L
+                --SEG_1 <= "0001"; -- 0000 = 0 = -
+                --SEG_2 <= "0001";
+                --SEG_3 <= "0001";
+                --if unique_A = '1' then
+                if A = '1' then
+                    pressed_value := "0001";
+                --elsif unique_B = '1' then
+                elsif B = '1' then
+                    pressed_value := "0010";
+                --elsif unique_C = '1' then
+                elsif C = '1' then
+                    pressed_value := "0011";
+                else
+                    pressed_value := "0000";
+                end if;
+                
+                --pressed_value_print <= pressed_value;
+                
+                if pressed_value /= "0000" then
+                    SEG_2 <= pressed_value;
+                    pressed_value := "0000";
                     futur_state <= E1;
                 else 
                     futur_state <= E0;
-                end if;
-            
+                end if;  
+                   
             when E1 =>
-                SEG_0 <= "0010"; -- 0100 = 4 = L
-                SEG_1 <= "0010"; -- 0000 = 0 = -
-                SEG_2 <= "0010";
-                SEG_3 <= "0010";
-                if B = '1' then
+                --SEG_0 <= "0010"; -- 0100 = 4 = L
+                --SEG_1 <= "0010"; -- 0000 = 0 = -
+                --SEG_2 <= "0010";
+                --SEG_3 <= "0010";
+                --if unique_A = '1' then
+                if A = '1' then
+                    pressed_value := "0001";
+                --elsif unique_B = '1' then
+                elsif B = '1' then
+                    pressed_value := "0010";
+                --elsif unique_C = '1' then
+                elsif C = '1' then
+                    pressed_value := "0011";
+                else
+                    pressed_value := "0000";
+                end if;
+                
+                --pressed_value_print <= pressed_value;
+                
+                if pressed_value /= "0000" then
+                    SEG_1 <= pressed_value;
+                    pressed_value := "0000";
                     futur_state <= E2;
                 else 
                     futur_state <= E1;
-                end if;
+                end if;  
             
             when E2 =>
-               SEG_0 <= "0011"; -- 0100 = 4 = L
-               SEG_1 <= "0011"; -- 0000 = 0 = -
-               SEG_2 <= "0011";
-               SEG_3 <= "0011";
+               SEG_0 <= "0111"; -- 0100 = 4 = L
+               SEG_1 <= "0111"; -- 0000 = 0 = -
+               SEG_2 <= "0111";
+               SEG_3 <= "0111";
                if B = '1' then
                     futur_state <= E3;
                else 
                     futur_state <= E2;
                end if;
+               
             when E3 => 
                SEG_0 <= "0100"; -- 0100 = 4 = L
                SEG_1 <= "0100"; -- 0000 = 0 = -
@@ -183,7 +224,7 @@ begin
                     futur_state <= alarm;
                 end if;
             when others =>
-              etat_prochain <= init;
+              futur_state <= init;
         end case;      
     end process;
 
