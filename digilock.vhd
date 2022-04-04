@@ -51,26 +51,8 @@ architecture Behavioral of digilock is
     type state is (init, E0, E1, E2, E3, opened, alarm);
     signal current_state: state := init;
     signal futur_state: state := init;
-    --signal pressed_value_print: std_logic_vector(3 downto 0) := "0000";
-    signal unique_A: std_logic;
-    signal unique_B: std_logic;
-    signal unique_C: std_logic;
-   -- signal print_compteur: integer;
-    
-    component pulse_generator is 
-        Port ( 
-            clk: in std_logic;
-            reset: in std_logic;
-            input: in std_logic;
-            output: out std_logic
-        );
-    end component;
     
 begin
-
-   -- test1: pulse_generator port map(clk => clk, reset => reset,  input => A, output => unique_A);
-   -- test2: pulse_generator port map(clk => clk, reset => reset,  input => B, output => unique_B);
-   -- test3: pulse_generator port map(clk => clk, reset => reset,  input => C, output => unique_C);
 
     process (clk, reset)
     begin
@@ -108,10 +90,6 @@ begin
                     entree_0 := "0011";
                 else
                     entree_0 := "0000";
-                end if;
-                
-                if compteur >= 2 then 
-                    compteur := 0;
                 end if;
 
                 if entree_0 /= "0000" then
@@ -193,7 +171,7 @@ begin
                if entree_0 = "0011" and entree_1 = "0001" and entree_2 = "0011" and entree_3 = "0010" then
                     futur_state <= opened;  
                elsif compteur >= 2 then 
-                    --compteur := 0;
+                    compteur := 0;
                     futur_state <= alarm;
                else 
                     compteur := compteur + 1;
@@ -201,7 +179,7 @@ begin
                end if;
                 
             when opened =>
-                SEG_0 <= "0101"; -- 0101 = 5 = O
+                SEG_0 <= "0101";
                 SEG_1 <= "0101";
                 SEG_2 <= "0101";
                 SEG_3 <= "0101";
