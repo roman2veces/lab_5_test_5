@@ -114,6 +114,8 @@ begin
                 SEG_3 <= "0000";
                 if pressed_value = "0001" then
                     futur_state <= E0;
+                else 
+                    futur_state <= init;
                 end if;    
                 
             when E0 =>     
@@ -123,6 +125,8 @@ begin
                 SEG_3 <= "0001";
                 if pressed_value = "0010" then
                     futur_state <= E1;
+                else 
+                    futur_state <= E0;
                 end if;
             
             when E1 =>
@@ -132,6 +136,8 @@ begin
                 SEG_3 <= "0010";
                 if B = '1' then
                     futur_state <= E2;
+                else 
+                    futur_state <= E1;
                 end if;
             
             when E2 =>
@@ -141,6 +147,8 @@ begin
                SEG_3 <= "0011";
                if B = '1' then
                     futur_state <= E3;
+               else 
+                    futur_state <= E2;
                end if;
             when E3 => 
                SEG_0 <= "0100"; -- 0100 = 4 = L
@@ -148,7 +156,9 @@ begin
                SEG_2 <= "0100";
                SEG_3 <= "0100";
                if B = '1' then
-                    futur_state <= opened;
+                    futur_state <= opened;  
+               else 
+                    futur_state <= E3;
                end if;
                 
             when opened =>
@@ -158,6 +168,8 @@ begin
                 SEG_3 <= "0101";
                 if B = '1' then
                     futur_state <= alarm;
+                else 
+                    futur_state <= opened;
                 end if;
             
             when alarm =>
@@ -167,9 +179,11 @@ begin
                 SEG_3 <= "0110"; -- 0001 = 1 = A 
                 if B = '1' then
                     futur_state <= init;
+                else 
+                    futur_state <= alarm;
                 end if;
-         --   when others =>
-             --   etat_prochain <= Init;
+            when others =>
+              etat_prochain <= init;
         end case;      
     end process;
 
