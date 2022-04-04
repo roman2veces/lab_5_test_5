@@ -42,6 +42,7 @@ entity digilock is
         SEG_1: out std_logic_vector(3 downto 0);
         SEG_2: out std_logic_vector(3 downto 0);
         SEG_3: out std_logic_vector(3 downto 0)
+       -- print_compteur: out integer
    );
 end digilock;
 
@@ -54,6 +55,7 @@ architecture Behavioral of digilock is
     signal unique_A: std_logic;
     signal unique_B: std_logic;
     signal unique_C: std_logic;
+   -- signal print_compteur: integer;
     
     component pulse_generator is 
         Port ( 
@@ -87,8 +89,8 @@ begin
     variable entree_2: std_logic_vector(3 downto 0);
     variable entree_3: std_logic_vector(3 downto 0);
   --  variable concat: std_logic_vector(15 downto 0);
-    variable compteur: integer RANGE 0 TO 4 := 0;
-    variable pressed_value: std_logic_vector(3 downto 0);
+    variable compteur: integer := 0;
+  --  variable pressed_value: std_logic_vector(3 downto 0);
     
     begin
         
@@ -98,108 +100,104 @@ begin
                 SEG_1 <= "0000"; -- 0000 = 0 = -
                 SEG_2 <= "0000";
                 SEG_3 <= "0000";
-                --if unique_A = '1' then
                 if A = '1' then
-                    pressed_value := "0001";
-                --elsif unique_B = '1' then
+                    entree_0 := "0001";
                 elsif B = '1' then
-                    pressed_value := "0010";
-                --elsif unique_C = '1' then
+                    entree_0 := "0010";
                 elsif C = '1' then
-                    pressed_value := "0011";
+                    entree_0 := "0011";
                 else
-                    pressed_value := "0000";
+                    entree_0 := "0000";
                 end if;
                 
-               -- pressed_value_print <= pressed_value;
-                
-                if pressed_value /= "0000" then
-                    SEG_0 <= "0000"; -- 0100 = 4 = L
-                    --SEG_1 <= "0000";
-                    --SEG_2 <= "0000";
-                    SEG_3 <= pressed_value;
-                    pressed_value := "0000";
+                if compteur >= 2 then 
+                    compteur := 0;
+                end if;
+
+                if entree_0 /= "0000" then
                     futur_state <= E0;
                 else 
                     futur_state <= init; 
                 end if;  
                 
             when E0 =>     
-                --SEG_0 <= "0001"; -- 0100 = 4 = L
-                --SEG_1 <= "0001"; -- 0000 = 0 = -
-                --SEG_2 <= "0001";
-                --SEG_3 <= "0001";
-                --if unique_A = '1' then
+                SEG_0 <= "0000";
+                SEG_1 <= "0000"; 
+                SEG_2 <= "0000";
+                SEG_3 <= entree_0;
+                
                 if A = '1' then
-                    pressed_value := "0001";
-                --elsif unique_B = '1' then
+                    entree_1 := "0001";
                 elsif B = '1' then
-                    pressed_value := "0010";
-                --elsif unique_C = '1' then
+                    entree_1 := "0010";
                 elsif C = '1' then
-                    pressed_value := "0011";
+                    entree_1 := "0011";
                 else
-                    pressed_value := "0000";
+                    entree_1 := "0000";
                 end if;
                 
-                --pressed_value_print <= pressed_value;
-                
-                if pressed_value /= "0000" then
-                    SEG_2 <= pressed_value;
-                    pressed_value := "0000";
+                if entree_1 /= "0000" then
                     futur_state <= E1;
                 else 
                     futur_state <= E0;
                 end if;  
                    
             when E1 =>
-                --SEG_0 <= "0010"; -- 0100 = 4 = L
-                --SEG_1 <= "0010"; -- 0000 = 0 = -
-                --SEG_2 <= "0010";
-                --SEG_3 <= "0010";
-                --if unique_A = '1' then
+                SEG_0 <= "0000"; -- 0100 = 4 = L
+                SEG_1 <= "0000"; -- 0000 = 0 = -
+                SEG_2 <= entree_1;
+                SEG_3 <= entree_0;
+                
                 if A = '1' then
-                    pressed_value := "0001";
-                --elsif unique_B = '1' then
+                    entree_2 := "0001";
                 elsif B = '1' then
-                    pressed_value := "0010";
-                --elsif unique_C = '1' then
+                    entree_2 := "0010";
                 elsif C = '1' then
-                    pressed_value := "0011";
+                    entree_2 := "0011";
                 else
-                    pressed_value := "0000";
+                    entree_2 := "0000";
                 end if;
                 
-                --pressed_value_print <= pressed_value;
-                
-                if pressed_value /= "0000" then
-                    SEG_1 <= pressed_value;
-                    pressed_value := "0000";
+                if entree_2 /= "0000" then
                     futur_state <= E2;
                 else 
                     futur_state <= E1;
                 end if;  
             
             when E2 =>
-               SEG_0 <= "0111"; -- 0100 = 4 = L
-               SEG_1 <= "0111"; -- 0000 = 0 = -
-               SEG_2 <= "0111";
-               SEG_3 <= "0111";
-               if B = '1' then
+               SEG_0 <= "0000";
+               SEG_1 <= entree_2;
+               SEG_2 <= entree_1;
+               SEG_3 <= entree_0;
+               if A = '1' then
+                    entree_3 := "0001";
+               elsif B = '1' then
+                    entree_3 := "0010";
+               elsif C = '1' then
+                    entree_3 := "0011";
+               else
+                    entree_3 := "0000";
+               end if;
+                
+               if entree_3 /= "0000" then
                     futur_state <= E3;
                else 
                     futur_state <= E2;
                end if;
                
             when E3 => 
-               SEG_0 <= "0100"; -- 0100 = 4 = L
-               SEG_1 <= "0100"; -- 0000 = 0 = -
-               SEG_2 <= "0100";
-               SEG_3 <= "0100";
-               if B = '1' then
+               SEG_0 <= entree_3;   
+               SEG_1 <= entree_2;
+               SEG_2 <= entree_1;
+               SEG_3 <= entree_0;
+               if entree_0 = "0011" and entree_1 = "0001" and entree_2 = "0011" and entree_3 = "0010" then
                     futur_state <= opened;  
+               elsif compteur >= 2 then 
+                    --compteur := 0;
+                    futur_state <= alarm;
                else 
-                    futur_state <= E3;
+                    compteur := compteur + 1;
+                    futur_state <= init;
                end if;
                 
             when opened =>
@@ -207,22 +205,20 @@ begin
                 SEG_1 <= "0101";
                 SEG_2 <= "0101";
                 SEG_3 <= "0101";
-                if B = '1' then
-                    futur_state <= alarm;
+                if A = '1' or B = '1' or C = '1' then
+                    futur_state <= init;
                 else 
                     futur_state <= opened;
                 end if;
             
             when alarm =>
-                SEG_0 <= "0110"; -- 0101 = 5 = O
-                SEG_1 <= "0110";
-                SEG_2 <= "0110"; -- 0100 = 4 = L
-                SEG_3 <= "0110"; -- 0001 = 1 = A 
-                if B = '1' then
-                    futur_state <= init;
-                else 
-                    futur_state <= alarm;
-                end if;
+                SEG_0 <= "0000"; 
+                SEG_1 <= "0000";
+                SEG_2 <= "0100"; 
+                SEG_3 <= "0001"; 
+               
+                futur_state <= alarm;
+                
             when others =>
               futur_state <= init;
         end case;      
