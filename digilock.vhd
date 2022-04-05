@@ -42,7 +42,6 @@ entity digilock is
         SEG_1: out std_logic_vector(3 downto 0);
         SEG_2: out std_logic_vector(3 downto 0);
         SEG_3: out std_logic_vector(3 downto 0)
-       -- print_compteur: out integer
    );
 end digilock;
 
@@ -62,17 +61,13 @@ begin
             current_state <= futur_state;
         end if;
     end process;
-    
-    --process (current_state, unique_A, unique_B, unique_C)
+
     process (current_state, A, B, C)
-   -- variable code: std_logic_vector(15 downto 0) := "0011000100110010";
     variable entree_0: std_logic_vector(3 downto 0);
     variable entree_1: std_logic_vector(3 downto 0);
     variable entree_2: std_logic_vector(3 downto 0);
     variable entree_3: std_logic_vector(3 downto 0);
-  --  variable concat: std_logic_vector(15 downto 0);
     variable compteur: integer := 0;
-  --  variable pressed_value: std_logic_vector(3 downto 0);
     
     begin
         
